@@ -40,8 +40,6 @@ dependencies:
   - openff-nagl
   - pytorch=*=cpu* # CPU inference is sufficient for OpenFF NAGL charge models
   - openff-nagl-models
-  - openff-packmol
-  - packmol
 
   ## HOOMD
   - hoomd
