@@ -36,7 +36,7 @@ dependencies:
 
     # Molecular Dynamics toolkits
     ## OpenFF
-    - openff-toolkit
+    - openff-toolkit>=0.17,<0.18 # NAGLChargesHandler is required by openff-interchange's NAGL charge path
     - openff-interchange
     - openff-nagl
     - pytorch=*=cpu* # CPU inference is sufficient for OpenFF NAGL charge models
