@@ -1,0 +1,39 @@
+name: SAAMR-env
+channels:
+  - conda-forge
+dependencies:
+  # Basic Python dependencies
+  - python=3.12
+  - pip
+  - jupyterlab
+
+  # Unit testing and notebook validation
+  - pytest
+  - pytest-cov
+  - nbval
+
+  # Mathematics and scientific computing
+  - numpy>=2.0
+  - scipy>=1.16.0 # required to allow use of RigidTransform
+  - sympy
+
+  # Graphs
+  - anytree
+  - networkx
+
+  # Visualization and notebook progress bars
+  - rich
+  - matplotlib
+  - ipympl
+  - tqdm
+
+  # Chemistry and SAAMR serialization
+  - rdkit
+  - periodictable
+
+  # OpenFF/OpenMM workflows used by the Role_Aware_* notebooks
+  - openff-toolkit>=0.17,<0.18 # NAGLChargesHandler is required by openff-interchange's NAGL charge path
+  - openff-interchange
+  - openff-nagl
+  - pytorch=*=cpu* # CPU inference is sufficient for OpenFF NAGL charge models
+  - openmm
