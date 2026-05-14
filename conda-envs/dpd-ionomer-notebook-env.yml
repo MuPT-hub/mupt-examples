@@ -1,0 +1,42 @@
+name: mupt-dpd-ionomer
+channels:
+  - conda-forge
+dependencies:
+  # Python and notebook execution
+  - python=3.12
+  - pip
+  - ipykernel
+  - jupyterlab
+  - nbclient
+
+  # MuPT core dependencies
+  - numpy>=2.0
+  - scipy>=1.16.0
+  - sympy
+  - anytree
+  - networkx
+  - rich
+  - tqdm
+
+  # Chemistry and structure handling
+  - rdkit
+  - periodictable
+
+  # DPD coordinate generation
+  # GPU HOOMD pair forces fail under this WSL2 CUDA runtime because the device
+  # does not expose the concurrent managed-memory capabilities HOOMD expects.
+  - hoomd=5.3.0=*cpu*
+  - gsd>=3.0
+  - freud=3.0
+
+  # Downstream OpenFF/OpenMM smoke tests in the notebook
+  - openff-toolkit
+  - openff-interchange
+  - openff-nagl
+  - openmm
+  - pytorch=*=cpu*
+
+  # Visualization used by adjacent examples / optional notebook cells
+  - matplotlib
+  - ipympl
+  - py3Dmol
