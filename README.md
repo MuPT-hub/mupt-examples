@@ -32,7 +32,7 @@ Shows how to perform a backmapping-like build procedure to go from nothing to an
 Allows specification of arbitrary homopolymer or copolymer chemistry, number of chains, and distribution of chain length  
 2. [Parameterization, export, and MD simulations with OpenFF](./examples_system/mdfiles_with_openff.ipynb)  
 Shows how to use the OpenFF toolkit to parameterize and export MD input files from a MuPT-build starting structure (obtained from the previous demo)  
-Concludes by running a short MD simulation in OpenMM
+Concludes by running a short MD simulation in OpenMM 
 3. [Role-aware SAAMR quickstart](./examples_system/Role_Aware_SAAMR_Quickstart.ipynb)  
 Builds a role-aware `UNIVERSE -> SEGMENT -> RESIDUE -> PARTICLE` MuPT system from SMILES strings, exports one RDKit molecule per segment, and writes git-ignored SDF files for downstream workflows  
 4. [Role-aware SAAMR OpenFF/OpenMM workflow](./examples_system/Role_Aware_SAAMR_OpenFF_OpenMM.ipynb)  
