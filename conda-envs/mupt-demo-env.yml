@@ -34,6 +34,7 @@ dependencies:
   - openmm
 
   # Analysis
+<<<<<<< HEAD
   - mdtraj
   - mdanalysis
   - nglview
@@ -41,3 +42,10 @@ dependencies:
   # MuPT is not published on conda-forge. Install the supported release from GitHub.
   - pip:
       - git+https://github.com/MuPT-hub/mupt.git@0.1.3a1
+=======
+  - mdanalysis
+
+  # Install the local PR #83 MuPT checkout after creating the env:
+  #   mamba activate mupt-demo-env
+  #   python -m pip install -e ./mupt
+>>>>>>> tutorial: Added in first stab at an end-to-end workflow
