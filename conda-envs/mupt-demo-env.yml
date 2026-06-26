@@ -1,0 +1,43 @@
+name: mupt-demo-env
+channels:
+  - conda-forge
+dependencies:
+  # Python and notebooks
+  - python>=3.12,<3.14
+  - pip
+  - jupyterlab
+  - ipykernel
+
+  # Core scientific Python
+  - numpy
+  - scipy>=1.16.0
+  - pandas
+  - matplotlib
+  - rich
+
+  # MuPT runtime dependencies
+  - anytree
+  - networkx
+  - periodictable
+  - rdkit
+
+  # AA-DPD initialization
+  - hoomd
+  - gsd
+  - freud
+
+  # OpenFF/OpenMM handoff
+  - openff-toolkit
+  # openff-interchange 0.4.x is not compatible with the Python 3.13 demo env.
+  - openff-interchange>=0.5.3
+  - openff-nagl
+  - openmm
+
+  # Analysis
+  - mdtraj
+  - mdanalysis
+  - nglview
+
+  # Install the local PR #83 MuPT checkout after creating the env:
+  #   mamba activate mupt-demo-env
+  #   python -m pip install -e ./mupt
