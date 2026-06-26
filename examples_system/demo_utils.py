@@ -969,45 +969,6 @@ def plot_openmm_state_data(state_data_path: str | Path):
     return state_df, fig, axes
 
 
-def load_mdanalysis_from_mupt(system: Any, resname_map: dict[str, str], trajectory_path: Optional[str | Path] = None) -> Any:
-    """Create an MDAnalysis Universe from MuPT and optionally attach a trajectory."""
-
-    from mupt.interfaces.mdanalysis import primitive_to_mdanalysis
-
-    universe = primitive_to_mdanalysis(system, resname_map=resname_map)
-    if trajectory_path is not None:
-        universe.load_new(str(trajectory_path))
-    return universe
-
-
-def radius_of_gyration_by_frame(universe: Any, selection: str = "all"):
-    """Compute mass-weighted radius of gyration for each trajectory frame."""
-
-    import pandas as pd
-    from rdkit import Chem
-
-    atoms = universe.select_atoms(selection)
-    periodic_table = Chem.GetPeriodicTable()
-    elements = getattr(atoms, "elements", None)
-    if elements is None:
-        elements = atoms.names
-    masses = np.array([periodic_table.GetAtomicWeight(str(element)) for element in elements], dtype=float)
-    rows = []
-    for ts in universe.trajectory:
-        positions = atoms.positions.astype(float)
-        center = np.average(positions, axis=0, weights=masses)
-        rg_a = float(np.sqrt(np.average(np.sum((positions - center) ** 2, axis=1), weights=masses)))
-        rows.append(
-            {
-                "frame": int(ts.frame),
-                "time_ps": float(getattr(ts, "time", ts.frame)),
-                "rg_angstrom": rg_a,
-                "rg_nm": rg_a / ANGSTROM_PER_NM,
-            }
-        )
-    return pd.DataFrame(rows)
-
-
 def plot_radius_of_gyration(rg_df: Any, y: str = "rg_nm"):
     """Plot radius of gyration versus trajectory time."""
 
