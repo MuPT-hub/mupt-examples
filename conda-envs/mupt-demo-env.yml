@@ -34,7 +34,9 @@ dependencies:
   - openmm
 
   # Analysis
+  - mdtraj
   - mdanalysis
+  - nglview
 
   # Install the local PR #83 MuPT checkout after creating the env:
   #   mamba activate mupt-demo-env
