@@ -99,7 +99,8 @@ class OpenMMRunResult:
     trajectory_path: Path
     nvt_trajectory_path: Path
     npt_trajectory_path: Path
-    state_data_path: Path
+    nvt_state_data_path: Path
+    npt_state_data_path: Path
     final_pdb_path: Path
     initial_energy: Any
     minimized_energy: Any
@@ -848,7 +849,8 @@ def run_openmm_workflow(interchange: Any, config: MDRunConfig, output_dir: str |
     output_dir.mkdir(parents=True, exist_ok=True)
     nvt_trajectory_path = output_dir / f"{prefix}_openmm_nvt.dcd"
     npt_trajectory_path = output_dir / f"{prefix}_openmm_npt.dcd"
-    state_data_path = output_dir / f"{prefix}_state_data.csv"
+    nvt_state_data_path = output_dir / f"{prefix}_nvt_state_data.csv"
+    npt_state_data_path = output_dir / f"{prefix}_npt_state_data.csv"
     final_pdb_path = output_dir / f"{prefix}_final.pdb"
 
     system = _interchange_to_openmm_system(interchange)
@@ -879,36 +881,36 @@ def run_openmm_workflow(interchange: Any, config: MDRunConfig, output_dir: str |
 
     nvt_steps = _steps(config.nvt_time_ns, config.timestep_fs)
     npt_steps = _steps(config.npt_time_ns, config.timestep_fs)
-    total_steps = max(1, nvt_steps + npt_steps)
-    report_interval = max(1, total_steps // max(1, config.frames_to_save))
-
     def close_reporter(reporter: Any) -> None:
         close = getattr(getattr(reporter, "_out", None), "close", None)
         if close is not None:
             close()
 
-    simulation.reporters.append(
-        StateDataReporter(
-            str(state_data_path),
-            report_interval,
-            step=True,
-            time=True,
-            potentialEnergy=True,
-            kineticEnergy=True,
-            temperature=True,
-            volume=True,
-            density=True,
-            speed=True,
-        )
+    state_reporter_kwargs = dict(
+        step=True,
+        time=True,
+        potentialEnergy=True,
+        kineticEnergy=True,
+        temperature=True,
+        volume=True,
+        density=True,
+        speed=True,
     )
+
     if nvt_steps:
         nvt_interval = max(1, nvt_steps // max(1, config.frames_to_save))
         nvt_reporter = DCDReporter(str(nvt_trajectory_path), nvt_interval)
-        simulation.reporters.append(nvt_reporter)
+        nvt_state_reporter = StateDataReporter(
+            str(nvt_state_data_path),
+            nvt_interval,
+            **state_reporter_kwargs,
+        )
+        simulation.reporters.extend([nvt_reporter, nvt_state_reporter])
         simulation.context.setVelocitiesToTemperature(config.temperature_k * omm_unit.kelvin)
         simulation.step(nvt_steps)
-        simulation.reporters.remove(nvt_reporter)
-        close_reporter(nvt_reporter)
+        for reporter in (nvt_reporter, nvt_state_reporter):
+            simulation.reporters.remove(reporter)
+            close_reporter(reporter)
     if npt_steps:
         system.addForce(
             MonteCarloBarostat(
@@ -920,10 +922,16 @@ def run_openmm_workflow(interchange: Any, config: MDRunConfig, output_dir: str |
         simulation.context.reinitialize(preserveState=True)
         npt_interval = max(1, npt_steps // max(1, config.frames_to_save))
         npt_reporter = DCDReporter(str(npt_trajectory_path), npt_interval)
-        simulation.reporters.append(npt_reporter)
+        npt_state_reporter = StateDataReporter(
+            str(npt_state_data_path),
+            npt_interval,
+            **state_reporter_kwargs,
+        )
+        simulation.reporters.extend([npt_reporter, npt_state_reporter])
         simulation.step(npt_steps)
-        simulation.reporters.remove(npt_reporter)
-        close_reporter(npt_reporter)
+        for reporter in (npt_reporter, npt_state_reporter):
+            simulation.reporters.remove(reporter)
+            close_reporter(reporter)
 
     final_state = simulation.context.getState(getEnergy=True, getPositions=True, enforcePeriodicBox=False)
     final_energy = final_state.getPotentialEnergy()
@@ -933,7 +941,8 @@ def run_openmm_workflow(interchange: Any, config: MDRunConfig, output_dir: str |
         trajectory_path=npt_trajectory_path,
         nvt_trajectory_path=nvt_trajectory_path,
         npt_trajectory_path=npt_trajectory_path,
-        state_data_path=state_data_path,
+        nvt_state_data_path=nvt_state_data_path,
+        npt_state_data_path=npt_state_data_path,
         final_pdb_path=final_pdb_path,
         initial_energy=initial_energy,
         minimized_energy=minimized_energy,
