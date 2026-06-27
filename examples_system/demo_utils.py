@@ -683,15 +683,13 @@ def _atom_name(atom: Any, atom_idx: int) -> str:
     return f"{atom.GetSymbol()}{atom_idx + 1}"
 
 
-def write_rdkit_mols_to_pdbx(rdkit_mols: list[Any], output_path: str | Path, box_vectors_nm: np.ndarray) -> Path:
-    """Write all RDKit molecules as one visualization-friendly PDBx/mmCIF."""
+def _rdkit_mols_to_openmm_topology_positions(rdkit_mols: list[Any], box_vectors_nm: np.ndarray):
+    """Return an OpenMM topology and positions for visualization exports."""
 
     import openmm
     from openmm import unit as omm_unit
-    from openmm.app import PDBxFile, Topology, element
+    from openmm.app import Topology, element
 
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
     topology = Topology()
     topology.setPeriodicBoxVectors(box_vectors_nm * omm_unit.nanometer)
     positions = []
@@ -733,9 +731,43 @@ def write_rdkit_mols_to_pdbx(rdkit_mols: list[Any], output_path: str | Path, box
         for bond in mol.GetBonds():
             topology.addBond(atom_lookup[(mol_idx, bond.GetBeginAtomIdx())], atom_lookup[(mol_idx, bond.GetEndAtomIdx())])
 
+    return topology, positions * omm_unit.nanometer
+
+
+def write_rdkit_mols_to_pdb(rdkit_mols: list[Any], output_path: str | Path, box_vectors_nm: np.ndarray) -> Path:
+    """Write all RDKit molecules as one visualization-friendly PDB."""
+
+    from openmm.app import PDBFile
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    topology, positions = _rdkit_mols_to_openmm_topology_positions(rdkit_mols, box_vectors_nm)
     with output_path.open("w", encoding="utf-8") as handle:
-        PDBxFile.writeFile(topology, positions * omm_unit.nanometer, handle)
+        PDBFile.writeFile(topology, positions, handle, keepIds=True)
     return output_path
+
+
+def write_rdkit_mols_to_pdbx(rdkit_mols: list[Any], output_path: str | Path, box_vectors_nm: np.ndarray) -> Path:
+    """Write all RDKit molecules as one visualization-friendly PDBx/mmCIF."""
+
+    from openmm.app import PDBxFile
+
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    topology, positions = _rdkit_mols_to_openmm_topology_positions(rdkit_mols, box_vectors_nm)
+    with output_path.open("w", encoding="utf-8") as handle:
+        PDBxFile.writeFile(topology, positions, handle)
+    return output_path
+
+
+def write_mupt_visualization_pdb(system: Any, resname_map: dict[str, str], output_path: str | Path) -> Path:
+    """Write a centered, whole-molecule PDB structure for visualization."""
+
+    box_lengths_a = box_lengths_a_from_primitive(system)
+    rdkit_mols = rdkit_mols_from_primitive(system, resname_map=resname_map)
+    for mol in rdkit_mols:
+        make_rdkit_molecule_whole_and_centered(mol, box_lengths_a)
+    return write_rdkit_mols_to_pdb(rdkit_mols, output_path, box_vectors_nm=box_vectors_nm_from_primitive(system))
 
 
 def write_mupt_visualization_pdbx(system: Any, resname_map: dict[str, str], output_path: str | Path) -> Path:
