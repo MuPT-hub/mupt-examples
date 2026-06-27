@@ -20,7 +20,7 @@ You can then safely remove the `mupt` directory from your file system if you wis
 
 ### End-to-End workflow examples (quickstart):
 0. [Building a dense polymer melt](./examples_system/0_Building_Dense_Polymer_Melts.ipynb)
-Allows a user to provide various monomer SMILES, DOP, statistical distribution of monomers, and a density to construct initial coordinates for a dense polymer melt.
+Allows a user to provide various monomer SMILES, DOP, statistical distribution of monomers, and a density to construct initial coordinates for a dense polymer melt. 
 1. [Simulate the melt](./examples_system/1_Simulating_Dense_Polymer_Melts.ipynb)
 Showcases how one can take the system constructed in 0. and assign force field parameters via OpenFF Interchange, export to OpenMM|GROMACS|LAMMPS, and demo a short OpenMM simulation, with optional analysis via MDAnalysis.
 
