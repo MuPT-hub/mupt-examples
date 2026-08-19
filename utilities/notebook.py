@@ -88,29 +88,6 @@ def summarize_aa_dpd(system: Any, result: Any):
     )
 
 
-def write_demo_mupt_sdf(system: Any, path: str | Path, resname_map: dict[str, str]) -> Path:
-    """Write a role-aware temporary `.mupt.sdf` and return its actual path."""
-
-    from mupt.temporary.sdf import MUPT_SDF_SUFFIX, write_primitive_to_sdf
-
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    write_primitive_to_sdf(system, path, resname_map=resname_map, default_atom_position=np.zeros(3))
-    if str(path).endswith(MUPT_SDF_SUFFIX):
-        return path
-    if path.suffix == ".sdf":
-        return path.with_suffix(MUPT_SDF_SUFFIX)
-    return Path(f"{path}{MUPT_SDF_SUFFIX}")
-
-
-def load_demo_mupt_sdf(path: str | Path, sanitize: bool = False) -> Any:
-    """Load a temporary `.mupt.sdf` into a role-aware MuPT hierarchy."""
-
-    from mupt.temporary.sdf import primitive_from_mupt_sdf
-
-    return primitive_from_mupt_sdf(path, sanitize=sanitize)
-
-
 def write_manifest(path: str | Path, **entries: Any) -> Path:
     """Write a small JSON manifest connecting the two workshop notebooks."""
 
@@ -138,6 +115,5 @@ def load_manifest(path: str | Path) -> dict[str, Any]:
     """Load a workshop manifest JSON file."""
 
     return json.loads(Path(path).read_text(encoding="utf-8"))
-
 
 
