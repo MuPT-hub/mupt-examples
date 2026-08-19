@@ -21,6 +21,7 @@ def show_available_chemistries(
 ):
     """Draw selected repeat-unit fragments with RDKit in a notebook."""
 
+    from IPython.display import SVG
     from rdkit import Chem
     from rdkit.Chem import Draw
 
@@ -42,10 +43,16 @@ def show_available_chemistries(
             legends.append(f"{chemistry}\n{unit_name}")
     if not mols:
         raise ValueError("No drawable repeat units were found for the selected chemistries.")
-    image = Draw.MolsToGridImage(mols, legends=legends, molsPerRow=mols_per_row, subImgSize=(260, 180))
+    image = Draw.MolsToGridImage(
+        mols,
+        legends=legends,
+        molsPerRow=mols_per_row,
+        subImgSize=(260, 180),
+        useSVG=True,
+    )
     if skipped:
         print("Skipped empty or invalid entries:", ", ".join(skipped))
-    return image
+    return SVG(image)
 
 
 
@@ -289,4 +296,3 @@ def plot_radius_of_gyration(rg_df: Any, y: str = "rg_nm"):
     ax.grid(alpha=0.25)
     fig.tight_layout()
     return fig, ax
-
