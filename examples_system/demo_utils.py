@@ -16,25 +16,10 @@ import json
 
 import numpy as np
 
-from recipes.saamr import MeltBuildPlan, StatisticalLinearPolymerRecipe
+from recipes.saamr import MeltBuildPlan
 
 
 ANGSTROM_PER_NM = 10.0
-
-
-@dataclass(frozen=True)
-class DPDRunConfig:
-    """Small AA-DPD settings surface for workshop users."""
-
-    device: str = "CPU"
-    n_steps_max: int = 50_000
-    n_steps_per_interval: int = 1_000
-    r_cut_a: float = 3.5
-    particle_spacing_a: float = 0.75
-    initial_residue_spacing_a: float = 1.5
-    random_seed: int = 42
-    write_gsd: bool = False
-    write_log: bool = False
 
 
 @dataclass(frozen=True)
@@ -158,35 +143,6 @@ def summarize_build_plan(plan: MeltBuildPlan):
         ],
         columns=["quantity", "value"],
     )
-
-
-def run_aa_dpd_initializer(
-    system: Any,
-    recipe: StatisticalLinearPolymerRecipe,
-    plan: MeltBuildPlan,
-    config: DPDRunConfig,
-) -> Any:
-    """Run AA-DPD in the box selected by the build plan."""
-
-    from mupt.builders.all_atom_dpd import AllAtomDPDBuilder, AllAtomDPDSettings
-
-    settings = AllAtomDPDSettings(
-        density_g_cm3=plan.target_density_g_cm3,
-        box_lengths_a=plan.box_lengths_a,
-        r_cut_a=config.r_cut_a,
-        particle_spacing_a=config.particle_spacing_a,
-        initial_residue_spacing_a=config.initial_residue_spacing_a,
-        n_steps_max=config.n_steps_max,
-        n_steps_per_interval=config.n_steps_per_interval,
-        report_interval=config.n_steps_per_interval,
-        device=config.device,
-        random_seed=config.random_seed,
-        write_gsd=config.write_gsd,
-        write_log=config.write_log,
-        output_name=f"{recipe.name}_aa_dpd" if (config.write_gsd or config.write_log) else None,
-        resname_map=recipe.resname_map,
-    )
-    return AllAtomDPDBuilder(settings=settings).build(system)
 
 
 def summarize_aa_dpd(system: Any, result: Any):
