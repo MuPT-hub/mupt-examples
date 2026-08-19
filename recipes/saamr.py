@@ -14,6 +14,7 @@ DA_PER_NM3_TO_G_CM3 = 1.0 / 602.214076
 ANGSTROM_PER_NM = 10.0
 
 
+@dataclass(frozen=True)
 class StatisticalLinearPolymerRecipe:
     """User-selected repeat-unit chemistry and chain composition."""
 
@@ -290,4 +291,3 @@ def build_statistical_linear_polymer_melt(recipe: StatisticalLinearPolymerRecipe
         )
         universe.attach_child(segment)
     return universe
-
