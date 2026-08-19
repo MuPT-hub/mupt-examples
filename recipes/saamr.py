@@ -14,10 +14,7 @@ DA_PER_NM3_TO_G_CM3 = 1.0 / 602.214076
 ANGSTROM_PER_NM = 10.0
 
 
-<<<<<<< HEAD
 @dataclass(frozen=True)
-=======
->>>>>>> refactor(recipes): extract SAAMR melt construction
 class StatisticalLinearPolymerRecipe:
     """User-selected repeat-unit chemistry and chain composition."""
 
@@ -76,11 +73,7 @@ def build_repeat_unit_lexicon(recipe: StatisticalLinearPolymerRecipe, semiminor_
     from mupt.geometry.coordinates.reference import CoordAxis, origin
     from mupt.geometry.shapes import Ellipsoid
     from mupt.geometry.transforms.rigid import rigid_vector_coalignment
-<<<<<<< HEAD
     from mupt.chemistry.rdkit import suppress_rdkit_logs
-=======
-    from mupt.interfaces.rdkit import suppress_rdkit_logs
->>>>>>> refactor(recipes): extract SAAMR melt construction
     from mupt.interfaces.smiles import primitive_from_smiles
     from mupt.roles import PrimitiveRole
 
@@ -263,10 +256,6 @@ def build_statistical_linear_polymer_melt(recipe: StatisticalLinearPolymerRecipe
     """Build a role-aware MuPT hierarchy from a concrete melt plan."""
 
     from mupt.mupr.primitives import Primitive
-<<<<<<< HEAD
-=======
-    from mupt.mupr.topology import TopologicalStructure
->>>>>>> refactor(recipes): extract SAAMR melt construction
     from mupt.roles import PrimitiveRole
 
     universe = Primitive(label=f"{recipe.name}_dense_melt", role=PrimitiveRole.UNIVERSE)
@@ -296,16 +285,8 @@ def build_statistical_linear_polymer_melt(recipe: StatisticalLinearPolymerRecipe
                 atom.role = PrimitiveRole.PARTICLE
             segment.attach_child(residue)
         segment.set_topology(
-<<<<<<< HEAD
             nx.path_graph(segment.children_by_handle.keys()),
-=======
-            nx.path_graph(segment.children_by_handle.keys(), create_using=TopologicalStructure),
->>>>>>> refactor(recipes): extract SAAMR melt construction
             max_registration_iter=100,
         )
         universe.attach_child(segment)
     return universe
-<<<<<<< HEAD
-=======
-
->>>>>>> refactor(recipes): extract SAAMR melt construction
