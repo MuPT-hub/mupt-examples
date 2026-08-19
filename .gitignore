@@ -176,5 +176,6 @@ cython_debug/
 # Notebook outputs
 **/alignments/*
 **/OpenFF_MD_input_files/*
+**/role_aware_saamr_outputs/*
 *.mol
 *.sdf

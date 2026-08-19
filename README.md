@@ -6,17 +6,23 @@ To obtain a copy of these examples, clone this repo and navigate into it, via:
 git clone https://github.com/MuPT-hub/mupt-examples # this repo
 cd mupt-examples
 ```
-Then set up a virtual environment with the Multiscale Polymer Toolkit installed to run the notebooks bundled here. The [`mupt` toolkit repo](https://github.com/MuPT-hub/mupt) provides details on how to do so, but if you don't like clicking you can also run the commands below, assuming you have a package management systems such as [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) (recommended) or [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) installed on your machine:
+Create the demo environment and start JupyterLab with [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html):
 ```sh
-mamba env create -f conda-envs/release-env.yml
-mamba activate mupt-env
-git clone https://github.com/MuPT-hub/mupt # the toolkit 
-cd mupt
-pip install .
+mamba env create -f conda-envs/mupt-demo-env.yml
+mamba activate mupt-demo-env
+jupyter lab
 ```
-You can then safely remove the `mupt` directory from your file system if you wish to
+
+The environment installs the supported MuPT release and the dependencies required by the demo notebooks.
 
 ## Index of examples
+
+### End-to-End workflow examples (quickstart):
+1. [Building a dense polymer melt](./examples_system/1_Building_Dense_Polymer_Melts.ipynb)
+Allows a user to provide various monomer SMILES, DOP, statistical distribution of monomers, and a density to construct initial coordinates for a dense polymer melt. 
+2. [Simulate the melt](./examples_system/2_Simulating_Dense_Polymer_Melts.ipynb)
+Showcases how one can take the system constructed in notebook 1 and assign force field parameters via OpenFF Interchange, export to OpenMM|GROMACS|LAMMPS, and demo a short OpenMM simulation, with optional analysis via MDAnalysis.
+
 ### System building examples (high-level):
 0. [Simple peptide example](./examples_system/hierarchy_on_peptides.ipynb)  
 Assembles a MuPT representation component hierarchy for a peptide generated from your choice of FASTA string  
@@ -27,7 +33,6 @@ Allows specification of arbitrary homopolymer or copolymer chemistry, number of 
 2. [Parameterization, export, and MD simulations with OpenFF](./examples_system/mdfiles_with_openff.ipynb)  
 Shows how to use the OpenFF toolkit to parameterize and export MD input files from a MuPT-build starting structure (obtained from the previous demo)  
 Concludes by running a short MD simulation in OpenMM
-
 ### MuPT Representation components tutorials (low-level):
 0. ["Molecule from scratch" - bare basics](./examples_repr/mol_from_scratch_basic.ipynb)  
 Shows how to initialize a basic "bond graph" hierarchy with no coordinates
@@ -57,4 +62,3 @@ conda create -n mupt-init -c conda-forge matplotlib scipy gsd freud hoomd fresne
 As of Aug 1 2025 DPD_init_ell.ipynb requires a developer install of [flowerMD](https://github.com/cmelab/flowermd)
 
 As of Sep 25 2025 DPD_init_mbuild.ipynb requires a developer install of [mbuild](https://github.com/mosdef-hub/mbuild) `gh pr checkout 1261` -->
-
