@@ -52,7 +52,7 @@ def show_available_chemistries(
     )
     if skipped:
         print("Skipped empty or invalid entries:", ", ".join(skipped))
-    return SVG(image)
+    return image if isinstance(image, SVG) else SVG(image)
 
 
 
