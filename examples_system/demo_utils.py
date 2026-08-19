@@ -13,8 +13,6 @@ from pathlib import Path
 from typing import Any, Iterable, Optional
 import ast
 import json
-import os
-import sys
 
 import networkx as nx
 import numpy as np
@@ -117,49 +115,6 @@ def find_examples_root(start: Optional[Path] = None) -> Path:
         if (candidate / "examples_system").exists() and (candidate / "README.md").exists():
             return candidate
     raise RuntimeError("Could not locate the mupt-examples repository root.")
-
-
-def ensure_mupt_pr83(source_path: Optional[Path] = None) -> Path:
-    """Import MuPT from a PR #83-capable checkout and return its package path."""
-
-    root = find_examples_root()
-    candidates = [
-        Path(os.environ["MUPT_SOURCE"]).expanduser() if os.environ.get("MUPT_SOURCE") else None,
-        Path(source_path).expanduser() if source_path is not None else None,
-        root / "mupt",
-        root.parent / "mupt",
-    ]
-    for candidate in candidates:
-        if candidate is not None and (candidate / "mupt" / "builders" / "all_atom_dpd.py").exists():
-            sys.path.insert(0, str(candidate))
-            break
-
-    try:
-        import mupt
-        from mupt.builders.all_atom_dpd import AllAtomDPDBuilder, AllAtomDPDSettings
-        from mupt.temporary.sdf import primitive_from_mupt_sdf, write_primitive_to_sdf
-        from mupt.interfaces.mdanalysis import primitive_to_mdanalysis
-    except Exception as exc:
-        raise RuntimeError(
-            "This demo needs the MuPT PR #83 checkout. From the mupt-examples "
-            "root, run `python -m pip install -e ./mupt` inside the "
-            "mupt-demo-env environment, or set MUPT_SOURCE to a PR #83 checkout."
-        ) from exc
-
-    missing = []
-    if not hasattr(AllAtomDPDBuilder, "plan_uniform_chain_lengths_for_box"):
-        missing.append("AllAtomDPDBuilder.plan_uniform_chain_lengths_for_box")
-    for symbol, name in (
-        (AllAtomDPDSettings, "AllAtomDPDSettings"),
-        (primitive_from_mupt_sdf, "primitive_from_mupt_sdf"),
-        (write_primitive_to_sdf, "write_primitive_to_sdf"),
-        (primitive_to_mdanalysis, "primitive_to_mdanalysis"),
-    ):
-        if symbol is None:
-            missing.append(name)
-    if missing:
-        raise RuntimeError(f"Imported MuPT from {mupt.__file__}, but it lacks: {missing}")
-    return Path(mupt.__file__).resolve()
 
 
 def load_repeat_unit_libraries(paths: Optional[Iterable[Path]] = None) -> dict[str, dict[str, str]]:
@@ -485,7 +440,7 @@ def build_mupt_melt(recipe: PolymerRecipe, lexicon: dict[str, Any], plan: MeltBu
 
 
 def run_aa_dpd_initializer(system: Any, recipe: PolymerRecipe, plan: MeltBuildPlan, config: DPDRunConfig) -> Any:
-    """Run PR #83 AA-DPD in the box selected by the build plan."""
+    """Run AA-DPD in the box selected by the build plan."""
 
     from mupt.builders.all_atom_dpd import AllAtomDPDBuilder, AllAtomDPDSettings
 
