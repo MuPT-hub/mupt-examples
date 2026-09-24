@@ -11,6 +11,16 @@
         "mid_S_styrene": "*-[C@@H:1](c1ccccc1)[CH2:2]-*",
         "tail_styrene": "*-[C:1](c1ccccc1)=C(-[H:2])"
     },
+    "polythiophene": {
+        "head_thiophene": "[H]-[C:1]1=C-C=[C:2](-S-1)-*",
+        "mid_thiophene": "*-[C:1]1=C-C=[C:2](-S-1)-*",
+        "tail_thiophene": "*-[C:1]1=C-C=[C:2](-S-1)-[H]"
+    },
+    "poly(3-hexylthiophene)": {
+        "head_3ht": "S1[C:1]([H])=C(CCCCCC)C=[C:2]1-*",
+        "mid_3ht": "S1[C:1](-*)=C(CCCCCC)C=[C:2]1-*",
+        "tail_3ht": "S1[C:1](-*)=C(CCCCCC)C=[C:2]1[H]"
+    },
     "polyethersulfone": {
         "head_bisphenol_S": "[H]-[O:1]c1ccc(cc1)S(=O)(=O)c1cc[c:2](cc1)-*",
         "mid_bisphenol_S": "*-[O:1]c1ccc(cc1)S(=O)(=O)c1cc[c:2](cc1)-*",
@@ -53,7 +63,6 @@
         "mid_3,4-isoprene": "*-[CH2:1]-[CH:2](C(C)=C)-*",
         "tail_3,4-isoprene": "*-[CH2:1]-[CH:2](C(C)=C)-[H]"
     },
-    "poly(3-hexylthiophene)": {},
     "PEG-PLGA": {},
     "Kapton": {},
     "Cellulose (D-glucose)": {}
