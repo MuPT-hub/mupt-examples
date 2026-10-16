@@ -179,3 +179,4 @@ cython_debug/
 **/role_aware_saamr_outputs/*
 *.mol
 *.sdf
+.DS_Store
