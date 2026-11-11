@@ -1,0 +1,8 @@
+# Files the workflow notebooks write when run
+*.gsd
+*.log
+log.txt
+*_record.json
+*_dpd.xml
+pe_melt.*
+pe_melt_pointenergy.*
