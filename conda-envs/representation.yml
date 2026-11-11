@@ -1,0 +1,29 @@
+# For representation/ and interfaces/: building and inspecting MuPT hierarchies.
+name: mupt-examples-representation
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.12,<3.14
+  - pip
+  - jupyterlab
+  - ipykernel
+  - ipympl
+
+  # MuPT runtime dependencies
+  - numpy>=2.0
+  - scipy>=1.16.0  # RigidTransform
+  - sympy
+  - rich
+  - anytree
+  - networkx
+  - periodictable
+  - rdkit
+
+  # Plotting
+  - matplotlib
+  - pygraphviz
+
+  - pip:
+      # Refactored MuPT API (open PR stack, top branch incl. mupt#166).
+      # Switch to the release tag once the stack merges into main.
+      - mupt @ git+https://github.com/MuPT-hub/mupt.git@interfaces-mbuild-positions
