@@ -31,7 +31,7 @@ Status is against the refactored API. "Docs" is the proposed [Diátaxis](https:/
 |---|---|---|---|
 | [`01_pe_all_atom_dpd`](./workflows/01_pe_all_atom_dpd.ipynb) | polyethylene melt: MuPT → mBuild → flowerMD AA-DPD → back onto MuPT → PDB + GROMACS/LAMMPS/OpenMM inputs (OpenFF Interchange) | ✅ runs | Tutorial |
 | [`02_ps_all_atom_openmm`](./workflows/02_ps_all_atom_openmm.ipynb) | isotactic polystyrene melt (10 chains × 20): same pipeline with stereocenters kept through AA-DPD, then OpenFF Sage + a short OpenMM run | ✅ runs | Tutorial |
-| `03_paam_cg_dpd` | coarse-grained polyacrylamide bead-spring DPD via flowerMD | planned | Tutorial |
+| [`03_paam_cg_dpd`](./workflows/03_paam_cg_dpd.ipynb) | coarse-grained polyacrylamide (5 chains × 20 beads): one bead per repeat unit, flowerMD bead-spring DPD, back onto MuPT, CG PDB + HOOMD gsd | ✅ runs | Tutorial |
 
 ### Representation: how MuPT describes molecules
 

@@ -5,4 +5,5 @@
 
 py.test --nbval-lax --nbval-current-env -vv \
     01_pe_all_atom_dpd.ipynb \
-    02_ps_all_atom_openmm.ipynb
+    02_ps_all_atom_openmm.ipynb \
+    03_paam_cg_dpd.ipynb
