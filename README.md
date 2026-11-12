@@ -15,11 +15,13 @@ cd mupt-examples
 
 ### Option A: pixi
 
-[pixi](https://pixi.sh) creates the environment inside the repo and pins exact versions in `pixi.lock`, so everyone runs the same thing. The pixi environments currently support **Linux** (and Windows through [WSL](https://learn.microsoft.com/windows/wsl/install)); on macOS, use Option B for now. Install pixi once:
+[pixi](https://pixi.sh) creates the environment inside the repo and pins exact versions in `pixi.lock`, so everyone runs the same thing. The pixi environments support Linux, macOS on Apple silicon, and Windows through [WSL](https://learn.microsoft.com/windows/wsl/install). Install pixi once:
 
 ```sh
 curl -fsSL https://pixi.sh/install.sh | sh    # then open a new terminal
 ```
+
+Already have pixi? It needs version 0.84 or newer (`pixi --version`); update with `pixi self-update`.
 
 Then start JupyterLab. The first run creates the environment (a few minutes); later runs start right away:
 

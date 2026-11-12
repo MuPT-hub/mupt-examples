@@ -7,17 +7,19 @@
 #   pixi run test                        # notebook tests run by MuPT's CI
 #   pixi run test-workflows              # workflow notebook tests
 #
-# Platforms: Linux (incl. WSL). macOS is not locked yet; use conda-envs/ there.
+# Platforms: Linux (incl. WSL) and macOS on Apple silicon; GPU environments are Linux-only.
+# Needs pixi >= 0.84 (`pixi self-update`).
 #
 # Environments: default (everything), representation, workflows, workflows-hoomd5,
 # workflows-hoomd5-gpu-cuda11, workflows-hoomd5-gpu-cuda12, legacy (MuPT 0.1.3a1, for legacy/)
 
 [workspace]
 name = "mupt-examples"
+requires-pixi = ">=0.84"
 channels = ["conda-forge"]
 platforms = [
   "linux-64",
-  # "osx-arm64",  # TODO: locking git pypi deps for osx-arm64 deadlocks in pixi 0.80
+  "osx-arm64",
   # NVIDIA GPU builds of HOOMD 5.2 (see the workflows-hoomd5-gpu-* environments)
   { name = "linux-64-cuda11", platform = "linux-64", cuda = "11.8" },
   { name = "linux-64-cuda12", platform = "linux-64", cuda = "12.6" },
@@ -55,7 +57,7 @@ test-workflows = { cmd = "bash notebook_tests.sh", cwd = "workflows", descriptio
 # ---------------------------------------------------------------- features
 
 [feature.representation]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 
 [feature.representation.dependencies]
 ipympl = "*"
@@ -87,21 +89,21 @@ mdanalysis = "*"
 flowermd = { git = "https://github.com/cmelab/flowerMD.git", branch = "main" }
 
 [feature.viz]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 
 [feature.viz.dependencies]
 nglview = "*"
 mdtraj = "*"
 
 [feature.hoomd-latest]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 
 [feature.hoomd-latest.dependencies]
 hoomd = ">=5.0,!=5.3.0"
 
 # HOOMD 5.2 (CPU build), for checking results against older HOOMD
 [feature.hoomd5-cpu]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 
 [feature.hoomd5-cpu.dependencies]
 hoomd = { version = "5.2.*", build = "cpu*" }
@@ -125,7 +127,7 @@ cuda-version = "12.*"
 
 # Pre-refactor MuPT for the notebooks in legacy/
 [feature.legacy]
-platforms = ["linux-64"]
+platforms = ["linux-64", "osx-arm64"]
 
 [feature.legacy.dependencies]
 python = ">=3.12,<3.14"
