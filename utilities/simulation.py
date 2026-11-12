@@ -87,7 +87,7 @@ def assign_openff_charges(molecules: list[Any], charge_method: str) -> None:
         if not NAGLToolkitWrapper.is_available():
             raise RuntimeError(
                 "The default charge method requires openff-nagl. Install the "
-                "mupt-demo-env environment or choose charge_method='zeros' only "
+                "conda-envs/legacy.yml environment or choose charge_method='zeros' only "
                 "for quick debugging."
             )
         registry = ToolkitRegistry([NAGLToolkitWrapper()])
