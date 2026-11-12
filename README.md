@@ -6,20 +6,72 @@ Example notebooks for [MuPT](https://github.com/MuPT-hub/mupt), the multiscale p
 
 ## Installation
 
+Clone the examples, then set up an environment with **pixi** (fastest) or **conda/mamba**. Both give the same packages.
+
 ```sh
 git clone https://github.com/MuPT-hub/mupt-examples
 cd mupt-examples
+```
+
+### Option A: pixi
+
+[pixi](https://pixi.sh) creates the environment inside the repo and pins exact versions in `pixi.lock`, so everyone runs the same thing. The pixi environments support Linux, macOS on Apple silicon, and Windows through [WSL](https://learn.microsoft.com/windows/wsl/install). Install pixi once:
+
+```sh
+curl -fsSL https://pixi.sh/install.sh | sh    # then open a new terminal
+```
+
+Already have pixi? It needs version 0.84 or newer (`pixi --version`); update with `pixi self-update`.
+
+Then start JupyterLab. The first run creates the environment (a few minutes); later runs start right away:
+
+```sh
+pixi run lab
+```
+
+That's it: notebooks open with every package available. To use one of the smaller environments instead, add `-e <name>`:
+
+```sh
+pixi run -e workflows lab
+```
+
+**Using VS Code or a JupyterLab you already have?** Register the environment as a Jupyter kernel once, then pick "MuPT examples (default)" from the kernel menu:
+
+```sh
+pixi run install-kernel                # or: pixi run -e workflows install-kernel
+```
+
+### Option B: conda / mamba
+
+```sh
 mamba env create -f conda-envs/mupt-examples.yml
 mamba activate mupt-examples
 jupyter lab
 ```
 
-| Environment | Use it for | Includes |
-|---|---|---|
-| [`mupt-examples.yml`](./conda-envs/mupt-examples.yml) | everything except `legacy/` | all of the below |
-| [`representation.yml`](./conda-envs/representation.yml) | `representation/`, `interfaces/` | MuPT, RDKit, plotting |
-| [`workflows.yml`](./conda-envs/workflows.yml) | `workflows/` | + flowerMD, HOOMD, mBuild/GMSO, OpenFF, OpenMM, MDAnalysis |
-| [`legacy.yml`](./conda-envs/legacy.yml) | `legacy/` | MuPT 0.1.3a1 (pre-refactor API) |
+To use the environment from VS Code or another Jupyter install: `python -m ipykernel install --user --name mupt-examples` (with the environment active).
+
+### Environments
+
+| pixi (`-e <name>`) | conda file | Use it for | Includes |
+|---|---|---|---|
+| `default` | [`mupt-examples.yml`](./conda-envs/mupt-examples.yml) | everything except `legacy/` | all of the below |
+| `representation` | [`representation.yml`](./conda-envs/representation.yml) | `representation/`, `interfaces/` | MuPT, RDKit, plotting |
+| `workflows` | [`workflows.yml`](./conda-envs/workflows.yml) | `workflows/` | + flowerMD, HOOMD, mBuild/GMSO, OpenFF, OpenMM, MDAnalysis |
+| `workflows-hoomd5`, `workflows-hoomd5-gpu-cuda11`, `workflows-hoomd5-gpu-cuda12` | | `workflows/` on HOOMD 5.2 (see below) | as `workflows` |
+| `legacy` | [`legacy.yml`](./conda-envs/legacy.yml) | `legacy/` | MuPT 0.1.3a1 (pre-refactor API) |
+
+### Older GPUs: HOOMD 5.2
+
+The default environments use the latest HOOMD. If your GPU or NVIDIA driver is too old for it, use HOOMD 5.2. Check which CUDA version your driver supports with `nvidia-smi` (top right, "CUDA Version"), then:
+
+| Your driver supports | Run |
+|---|---|
+| CUDA 11.8 – 12.5 | `pixi run -e workflows-hoomd5-gpu-cuda11 lab` |
+| CUDA 12.6 or newer | `pixi run -e workflows-hoomd5-gpu-cuda12 lab` |
+| no NVIDIA GPU | `pixi run -e workflows-hoomd5 lab` (CPU build) |
+
+GPU builds are Linux-only; WSL supports NVIDIA GPUs, so Windows users can run them there.
 
 ## Index
 
@@ -61,5 +113,6 @@ Kept unchanged while we decide where each one belongs; see [`legacy/README.md`](
 `notebook_tests_master.sh` runs the notebooks in `representation/`, `interfaces/` and `legacy/` (MuPT's CI runs this script). Workflow notebooks need flowerMD and HOOMD, so run them separately:
 
 ```sh
-cd workflows && bash notebook_tests.sh
+pixi run test-workflows                       # or, with conda: cd workflows && bash notebook_tests.sh
+pixi run -e workflows-hoomd5 test-workflows   # same notebooks on HOOMD 5.2
 ```

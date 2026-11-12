@@ -1,0 +1,2 @@
+# GitHub syntax highlighting; collapse the lock file in diffs
+pixi.lock merge=binary linguist-language=YAML linguist-generated=true
