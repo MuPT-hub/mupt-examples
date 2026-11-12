@@ -177,6 +177,7 @@ cython_debug/
 **/alignments/*
 **/OpenFF_MD_input_files/*
 **/role_aware_saamr_outputs/*
+**/dense_melt_demo_outputs/*
 *.mol
 *.sdf
 .DS_Store

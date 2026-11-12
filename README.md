@@ -1,64 +1,65 @@
 # mupt-examples
 
+Example notebooks for [MuPT](https://github.com/MuPT-hub/mupt), the multiscale polymer toolkit.
+
+> These notebooks use MuPT's **refactored API**, which is still in review on the [MuPT PR stack](https://github.com/MuPT-hub/mupt/pulls) (#141 through #166). Environments pin the top branch of that stack until it is released. Notebooks for the previous release (0.1.3a1) are in [`legacy/`](./legacy).
+
 ## Installation
-To obtain a copy of these examples, clone this repo and navigate into it, via:
+
 ```sh
-git clone https://github.com/MuPT-hub/mupt-examples # this repo
+git clone https://github.com/MuPT-hub/mupt-examples
 cd mupt-examples
-```
-Create the demo environment and start JupyterLab with [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html):
-```sh
-mamba env create -f conda-envs/mupt-demo-env.yml
-mamba activate mupt-demo-env
+mamba env create -f conda-envs/mupt-examples.yml
+mamba activate mupt-examples
 jupyter lab
 ```
 
-The environment installs the supported MuPT release and the dependencies required by the demo notebooks.
+| Environment | Use it for | Includes |
+|---|---|---|
+| [`mupt-examples.yml`](./conda-envs/mupt-examples.yml) | everything except `legacy/` | all of the below |
+| [`representation.yml`](./conda-envs/representation.yml) | `representation/`, `interfaces/` | MuPT, RDKit, plotting |
+| [`workflows.yml`](./conda-envs/workflows.yml) | `workflows/` | + flowerMD, HOOMD, mBuild/GMSO, OpenFF, OpenMM, MDAnalysis |
+| [`legacy.yml`](./conda-envs/legacy.yml) | `legacy/` | MuPT 0.1.3a1 (pre-refactor API) |
 
-## Index of examples
+## Index
 
-### End-to-End workflow examples (quickstart):
-1. [Building a dense polymer melt](./examples_system/1_Building_Dense_Polymer_Melts.ipynb)
-Allows a user to provide various monomer SMILES, DOP, statistical distribution of monomers, and a density to construct initial coordinates for a dense polymer melt. 
-2. [Simulate the melt](./examples_system/2_Simulating_Dense_Polymer_Melts.ipynb)
-Showcases how one can take the system constructed in notebook 1 and assign force field parameters via OpenFF Interchange, export to OpenMM|GROMACS|LAMMPS, and demo a short OpenMM simulation, with optional analysis via MDAnalysis.
+Status is against the refactored API. "Docs" is the proposed [Diátaxis](https://diataxis.fr) category for the MuPT documentation site ([MuPT-hub/mupt#105](https://github.com/MuPT-hub/mupt/issues/105)).
 
-### System building examples (high-level):
-0. [Simple peptide example](./examples_system/hierarchy_on_peptides.ipynb)  
-Assembles a MuPT representation component hierarchy for a peptide generated from your choice of FASTA string  
-Depicts the topological and hierarchical organization of parts in a colorful graphic with 2D coordinates
-1. [Backmapped chain/melt building](./examples_system/ellipsoidal_chain_placement.ipynb)  
-Shows how to perform a backmapping-like build procedure to go from nothing to an MD starting structure using MuPT tools  
-Allows specification of arbitrary homopolymer or copolymer chemistry, number of chains, and distribution of chain length  
-2. [Parameterization, export, and MD simulations with OpenFF](./examples_system/mdfiles_with_openff.ipynb)  
-Shows how to use the OpenFF toolkit to parameterize and export MD input files from a MuPT-build starting structure (obtained from the previous demo)  
-Concludes by running a short MD simulation in OpenMM
-### MuPT Representation components tutorials (low-level):
-0. ["Molecule from scratch" - bare basics](./examples_repr/mol_from_scratch_basic.ipynb)  
-Shows how to initialize a basic "bond graph" hierarchy with no coordinates
-1. ["Molecule from scratch" - advanced usage](./examples_repr/mol_from_scratch_advanced.ipynb)  
-"Kitchen sink" tutorial of how to build a molecule fragment with complete hierarchical info using nothing but MuPT representation components  
-Generates physically-plausible coordinates and topology using no force fields or external coordinate embedding algorithms (just basic knowledge of point groups)  
-and shows how one can leverage the concurrent, arbitrary resolutions structure of the representation to organize initialization around chemically-meaningful motifs   
-2. [Molecule from SMILES/RDKit](./examples_repr/mupt_primitives_rdkit.ipynb)  
-Shows how to instantiate MuPT representation hierarchies from RDKit Mols and SMILES string
-3. [Rigid body shapes](./examples_repr/mupt_shapes.ipynb)  
-Shows off that different kinds of shapes that MuPT Primitive objects can take on (PointClouds, Spheres, Ellipsoids, and Rods)  
-4. [Inter-body spatial alignment](./examples_repr/connector_alignment.ipynb)
-Generates animated trajectories which illustrate the different kinds of inter-body alignment operations MuPT uses to spatially align all MuPT representation components
+### Workflows: end to end, from SMILES to MD input files
 
-<!-- ## DPD notebooks:
-The DPD notebooks are meant to demonstrate a system initialization workflow of polymer various systems and configuration routines. These configurations are relaxed using a HOOMD simulation with DPD forces. A list of the notebooks and their descriptions:
-+ DPD_init.ipynb: initializes a polymer system using a random walk and relaxes the system using DPD forces.
-+ DPD_init_ell.ipynb: initializes a random configuration of ellipsoid chains, based on the flowerMD ellipsoid model, and relaxes the system using DPD forces.
-+ DPD_init_mbuild.ipynb: initializes a polymer system using an mbuild2.0 random walk and relaxes the system using DPD forces.
+| Notebook | What it shows | Status | Docs |
+|---|---|---|---|
+| [`01_pe_all_atom_dpd`](./workflows/01_pe_all_atom_dpd.ipynb) | polyethylene melt: MuPT → mBuild → flowerMD AA-DPD → back onto MuPT → PDB + GROMACS/LAMMPS/OpenMM inputs (OpenFF Interchange) | ✅ runs | Tutorial |
+| [`02_ps_all_atom_openmm`](./workflows/02_ps_all_atom_openmm.ipynb) | isotactic polystyrene melt (10 chains × 20): same pipeline with stereocenters kept through AA-DPD, then OpenFF Sage + a short OpenMM run | ✅ runs | Tutorial |
+| [`03_paam_cg_dpd`](./workflows/03_paam_cg_dpd.ipynb) | coarse-grained polyacrylamide (5 chains × 20 beads): one bead per repeat unit, flowerMD bead-spring DPD, back onto MuPT, CG PDB + HOOMD gsd | ✅ runs | Tutorial |
 
-Environment for  DPD_init.ipynb can be installed with `dpd-env.yml` or with:
+### Representation: how MuPT describes molecules
 
+| Notebook | What it shows | Status | Docs |
+|---|---|---|---|
+| [`01_hierarchy_basics`](./representation/01_hierarchy_basics.ipynb) | building a bond-graph hierarchy with no coordinates | needs port (`visualize_topology` removed) | Tutorial |
+| [`02_hierarchy_advanced`](./representation/02_hierarchy_advanced.ipynb) | "kitchen sink": a fragment with full hierarchy and coordinates from point groups | needs port; likely replaced by simpler examples | Not in docs |
+| [`03_shapes`](./representation/03_shapes.ipynb) | rigid-body shapes: point clouds, spheres, ellipsoids, rods | imports OK, not re-run | How-To |
+| [`04_connector_alignment`](./representation/04_connector_alignment.ipynb) | animations of the alignment operations between bodies | imports OK, not re-run | How-To |
+
+### Interfaces: getting molecules in and out of MuPT
+
+| Notebook | What it shows | Status | Docs |
+|---|---|---|---|
+| [`01_rdkit`](./interfaces/01_rdkit.ipynb) | MuPT hierarchies from RDKit molecules and SMILES | needs port (`visualize_topology` removed) | How-To |
+
+### Analysis
+
+Planned: analysis examples moving over from [mupt-analysis](https://github.com/MuPT-hub/mupt-analysis) ([#22](https://github.com/MuPT-hub/mupt-examples/issues/22)).
+
+### Legacy (MuPT 0.1.3a1)
+
+Kept unchanged while we decide where each one belongs; see [`legacy/README.md`](./legacy/README.md). Not part of the docs site for now.
+
+## Testing
+
+`notebook_tests_master.sh` runs the notebooks in `representation/`, `interfaces/` and `legacy/` (MuPT's CI runs this script). Workflow notebooks need flowerMD and HOOMD, so run them separately:
+
+```sh
+cd workflows && bash notebook_tests.sh
 ```
-conda create -n mupt-init -c conda-forge matplotlib scipy gsd freud hoomd fresnel jupyter
-```
-
-As of Aug 1 2025 DPD_init_ell.ipynb requires a developer install of [flowerMD](https://github.com/cmelab/flowermd)
-
-As of Sep 25 2025 DPD_init_mbuild.ipynb requires a developer install of [mbuild](https://github.com/mosdef-hub/mbuild) `gh pr checkout 1261` -->

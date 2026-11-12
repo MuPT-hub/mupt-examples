@@ -1,9 +1,12 @@
 #!/bin/bash
 
+# Run by MuPT's CI (it clones this repo and sources this script), so this list
+# keeps testing the same notebooks as before the reorganization.
+# workflows/ is not listed: it needs flowerMD + HOOMD, which MuPT's CI env lacks.
 example_dirs=(
-    # 'examples_DPD' # TODO: automate notebook tests for DPD examples
-    'examples_repr'
-    'examples_system'
+    'representation'
+    'interfaces'
+    'legacy'
 )
 batch_status="passing"
 

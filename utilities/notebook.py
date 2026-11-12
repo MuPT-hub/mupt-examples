@@ -16,7 +16,7 @@ def find_examples_root(start: Optional[Path] = None) -> Path:
 
     start = Path.cwd() if start is None else Path(start)
     for candidate in (start, *start.parents):
-        if (candidate / "examples_system").exists() and (candidate / "README.md").exists():
+        if (candidate / "legacy").exists() and (candidate / "README.md").exists():
             return candidate
     raise RuntimeError("Could not locate the mupt-examples repository root.")
 
@@ -27,8 +27,8 @@ def load_repeat_unit_libraries(paths: Optional[Iterable[Path]] = None) -> dict[s
     root = find_examples_root()
     if paths is None:
         paths = [
-            root / "examples_system" / "repeat_unit_SMILES.json",
-            root / "examples_system" / "repeat_units_arom_hetcycles.json",
+            root / "legacy" / "repeat_unit_SMILES.json",
+            root / "legacy" / "repeat_units_arom_hetcycles.json",
         ]
     library: dict[str, dict[str, str]] = {}
     for path in paths:

@@ -1,4 +1,4 @@
-name: mupt-demo-env
+name: mupt-examples-legacy
 channels:
   - conda-forge
 dependencies:
@@ -38,6 +38,6 @@ dependencies:
   - mdanalysis
   - nglview
 
-  # MuPT is not published on conda-forge. Install the supported release from GitHub.
+  # legacy/ notebooks use the pre-refactor API, so this stays on the 0.1.3a1 release.
   - pip:
       - git+https://github.com/MuPT-hub/mupt.git@0.1.3a1
