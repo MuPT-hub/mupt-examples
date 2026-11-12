@@ -6,3 +6,5 @@ log.txt
 *_dpd.xml
 pe_melt.*
 pe_melt_pointenergy.*
+ps_melt.*
+ps_melt_pointenergy.*
