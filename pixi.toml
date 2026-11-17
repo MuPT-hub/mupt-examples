@@ -1,0 +1,171 @@
+# pixi environments for the MuPT examples (https://pixi.sh).
+# Equivalent conda environment files live in conda-envs/.
+#
+#   pixi run lab                         # JupyterLab with everything (default environment)
+#   pixi run -e workflows-hoomd5 lab     # JupyterLab with HOOMD 5.2 instead of the latest HOOMD
+#   pixi run -e workflows install-kernel # register an environment as a Jupyter kernel (VS Code, existing JupyterLab)
+#   pixi run test                        # notebook tests run by MuPT's CI
+#   pixi run test-workflows              # workflow notebook tests
+#
+# Platforms: Linux (incl. WSL) and macOS on Apple silicon; GPU environments are Linux-only.
+# Needs pixi >= 0.84 (`pixi self-update`).
+#
+# Environments: default (everything), representation, workflows, workflows-hoomd5,
+# workflows-hoomd5-gpu-cuda11, workflows-hoomd5-gpu-cuda12, legacy (MuPT 0.1.3a1, for legacy/)
+
+[workspace]
+name = "mupt-examples"
+requires-pixi = ">=0.84"
+channels = ["conda-forge"]
+platforms = [
+  "linux-64",
+  "osx-arm64",
+  # NVIDIA GPU builds of HOOMD 5.2 (see the workflows-hoomd5-gpu-* environments)
+  { name = "linux-64-cuda11", platform = "linux-64", cuda = "11.8" },
+  { name = "linux-64-cuda12", platform = "linux-64", cuda = "12.6" },
+]
+
+[dependencies]
+python = ">=3.12,<3.14"
+pip = "*"
+jupyterlab = "*"
+ipykernel = "*"
+pytest = "*"
+nbval = "*"
+# MuPT runtime dependencies
+numpy = ">=2.0"
+scipy = ">=1.16.0"  # RigidTransform
+sympy = "*"
+rich = "*"
+anytree = "*"
+networkx = "*"
+periodictable = "*"
+rdkit = "*"
+matplotlib = "*"
+
+[pypi-dependencies]
+# Refactored MuPT API (open PR stack, top branch incl. mupt#166).
+# Switch to the release tag once the stack merges into main.
+mupt = { git = "https://github.com/MuPT-hub/mupt.git", branch = "interfaces-mbuild-positions" }
+
+[tasks]
+lab = { cmd = "jupyter lab", description = "Start JupyterLab in this environment" }
+install-kernel = { cmd = "python -m ipykernel install --user --name mupt-examples-$PIXI_ENVIRONMENT_NAME --display-name \"MuPT examples ($PIXI_ENVIRONMENT_NAME)\"", description = "Register this environment as a Jupyter kernel" }
+test = { cmd = "bash notebook_tests_master.sh", description = "Notebook tests run by MuPT's CI" }
+test-workflows = { cmd = "bash notebook_tests.sh", cwd = "workflows", description = "Workflow notebook tests (needs flowerMD + HOOMD)" }
+
+# ---------------------------------------------------------------- features
+
+[feature.representation]
+platforms = ["linux-64", "osx-arm64"]
+
+[feature.representation.dependencies]
+ipympl = "*"
+pygraphviz = "*"
+
+[feature.workflows.dependencies]
+# flowerMD and its simulation stack (HOOMD + MoSDeF); HOOMD itself comes from
+# one of the hoomd-latest / hoomd5-cpu / cuda11 / cuda12 features below
+gsd = ">=3.0,<5"
+freud = ">=3.4"
+fresnel = ">=0.13.5"
+mbuild = ">=1.0"
+gmso = ">=0.16.2"
+foyer = ">=1.0"
+grits = ">=0.5.1"
+cmeutils = ">=1.3"
+openbabel = ">=3"
+py3dmol = "*"
+unyt = "*"
+# MD input files (OpenFF Interchange -> GROMACS/LAMMPS/OpenMM) and analysis
+openff-toolkit-base = "*"
+openff-interchange-base = "*"
+openff-forcefields = "*"
+openmm = "*"
+mdanalysis = "*"
+
+[feature.workflows.pypi-dependencies]
+# flowerMD is not on PyPI; install from main (includes AA-DPD, cmelab/flowerMD#273)
+flowermd = { git = "https://github.com/cmelab/flowerMD.git", branch = "main" }
+
+[feature.viz]
+platforms = ["linux-64", "osx-arm64"]
+
+[feature.viz.dependencies]
+nglview = "*"
+mdtraj = "*"
+
+[feature.hoomd-latest]
+platforms = ["linux-64", "osx-arm64"]
+
+[feature.hoomd-latest.dependencies]
+hoomd = ">=5.0,!=5.3.0"
+
+# HOOMD 5.2 (CPU build), for checking results against older HOOMD
+[feature.hoomd5-cpu]
+platforms = ["linux-64", "osx-arm64"]
+
+[feature.hoomd5-cpu.dependencies]
+hoomd = { version = "5.2.*", build = "cpu*" }
+
+# GPU builds of HOOMD 5.2 (Linux + NVIDIA only), for older GPUs / drivers.
+# Pick the CUDA line your driver supports;
+# `nvidia-smi` shows the highest CUDA version the driver can run.
+[feature.cuda11]
+platforms = ["linux-64-cuda11"]
+
+[feature.cuda11.dependencies]
+hoomd = { version = "5.2.*", build = "gpu*" }
+cuda-version = "11.8.*"
+
+[feature.cuda12]
+platforms = ["linux-64-cuda12"]
+
+[feature.cuda12.dependencies]
+hoomd = { version = "5.2.*", build = "gpu*" }
+cuda-version = "12.*"
+
+# Pre-refactor MuPT for the notebooks in legacy/
+[feature.legacy]
+platforms = ["linux-64", "osx-arm64"]
+
+[feature.legacy.dependencies]
+python = ">=3.12,<3.14"
+pip = "*"
+jupyterlab = "*"
+ipykernel = "*"
+pytest = "*"
+nbval = "*"
+numpy = "*"
+scipy = ">=1.16.0"
+pandas = "*"
+matplotlib = "*"
+rich = "*"
+anytree = "*"
+networkx = "*"
+periodictable = "*"
+rdkit = "*"
+hoomd = "*"
+gsd = "*"
+freud = "*"
+openff-toolkit = "*"
+openff-interchange = ">=0.5.3"
+openff-nagl = "*"
+openmm = "*"
+mdtraj = "*"
+mdanalysis = "*"
+nglview = "*"
+
+[feature.legacy.pypi-dependencies]
+mupt = { git = "https://github.com/MuPT-hub/mupt.git", tag = "0.1.3a1" }
+
+# ---------------------------------------------------------------- environments
+
+[environments]
+default = { features = ["representation", "workflows", "hoomd-latest", "viz"], solve-group = "latest" }
+representation = { features = ["representation"], solve-group = "latest" }
+workflows = { features = ["workflows", "hoomd-latest"], solve-group = "latest" }
+workflows-hoomd5 = { features = ["workflows", "hoomd5-cpu"] }
+workflows-hoomd5-gpu-cuda11 = { features = ["workflows", "cuda11"] }
+workflows-hoomd5-gpu-cuda12 = { features = ["workflows", "cuda12"] }
+legacy = { features = ["legacy"], no-default-feature = true }
